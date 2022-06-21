@@ -1,0 +1,23 @@
+{
+  "name": "redirect-poc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "scripts": {
+    "start": "http-server src -P http://localhost:8080?",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/petermikitsh/redirect-poc.git"
+  },
+  "author": "Peter Mikitsh",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/petermikitsh/redirect-poc/issues"
+  },
+  "homepage": "https://github.com/petermikitsh/redirect-poc#readme"
+}
