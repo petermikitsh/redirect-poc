@@ -3,9 +3,78 @@
 
 <head>
   <title>Redirect POC</title>
+  <style>
+    a {
+      display: block;
+    }
+  </style>
 </head>
 
 <body>
+  <a href="/oldpage">/oldpage (server-side navigation)</a>
+  <a href id="clientSideNav">/oldpage (client-side navigation)</a>
+  <a href="/oldpage#myhash">/oldpage#myhash (hash routing)</a>
+  <a href="/?preventNavigation=true">/?preventNavigation</a>
+  <script>
+
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.get('preventNavigation')) {
+      var location = window.document.location;
+
+      var preventNavigation = function () {
+        var originalHashValue = location.hash;
+
+        window.setTimeout(function () {
+          location.hash = 'preventNavigation' + ~~(9999 * Math.random());
+          location.hash = originalHashValue;
+        }, 0);
+      };
+
+      window.addEventListener('beforeunload', preventNavigation, false);
+      window.addEventListener('unload', preventNavigation, false);
+    }
+
+    const getRedirectURL = async () => {
+      const simplifiedURL = window.location.pathname + window.location.hash;
+      const urlMap = {
+        '/oldpage': '/newpage',
+        '/oldpage#myhash': '/newpage#newhash'
+      };
+
+      return Promise.resolve(urlMap[simplifiedURL]);
+    }
+
+    // server-side navigation
+    if (!params.get('preventNavigation')) {
+      window.onbeforeunload = () => {
+        debugger;
+
+        // const redirectURL = await getRedirectURL();
+
+        // if (redirectURL) {
+        window.location.href = '/newpage';
+        // }
+
+        return '';
+      }
+    }
+
+    // client-side navigation
+    window.addEventListener('hashchange', async () => {
+      console.log('The hash has changed!')
+      const redirectURL = await getRedirectURL();
+
+      if (redirectURL) {
+        window.history.replaceState(null, null, redirectURL);
+      }
+    }, false);
+
+    document.querySelector('#clientSideNav').addEventListener('click', (e) => {
+      e.preventDefault();
+      window.history.pushState(null, null, '/oldpage');
+    });
+  </script>
 
 </body>
 
